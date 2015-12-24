@@ -1,25 +1,40 @@
 var canvas = document.getElementById("theCanvas");
 var ctx = canvas.getContext("2d");
 var myImageData = ctx.createImageData(canvas.width, canvas.height);
+paint();
 
-generateBackground(ctx, myImageData);
+function paint() {
+    generateBackground(ctx, myImageData);
+    setTimeout(paint, 1);
+}
 
-
-//broken! doesnt go all the way down the canvas. plot() isnt determined by anything
-//it jsut acts in a predictable way.
 function generateBackground(ctx, myImageData) {
-    var thingy = 0;
+    var pat1 = Math.floor(Math.random() * 100);
+    var pat2 = Math.floor(Math.random() * 100);
     var data = myImageData.data;
     for (var i = 0; i < data.length; i += 4) {
-        plot(data, i, thingy);
-        thingy += 101;
+        if ((pat1 + i) % 3 == 0) {
+            plot1(data, i, pat1);
+            pat1++;
+        }
+        else {
+            plot2(data, i, pat2);
+            pat2 += pat1;
+        }
     }
     ctx.putImageData(myImageData, 0, 0);
 }
 
-function plot(data, x, thingy) {
-    data[x] = x * thingy % 255;
-    data[x + 1] = 0;
-    data[x + 2] = 0;
-    data[x + 3] = 255;
+function plot1(data, x, pat) {
+    data[x] = x % 255;
+    data[x + 1] = x * pat % 255;
+    data[x + 2] = pat % 255;
+    data[x + 3] = x;
+}
+
+function plot2(data, x, pat) {
+    data[x] = x % 255;
+    data[x + 1] = x * pat % 255;
+    data[x + 2] = pat % 255;
+    data[x + 3] = x;
 }
